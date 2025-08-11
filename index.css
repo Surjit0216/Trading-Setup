@@ -1,12 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-:root { --card: #ffffff; --muted: #6b7280; }
+
+/* Typography + page */
+:root { --card: #ffffff; }
+html,body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji"; }
 .dark { background-color: #0b0f1a; color: #e5e7eb; }
-.card { background: var(--card); border-radius: 1rem; box-shadow: 0 1px 6px rgba(0,0,0,.08); }
-.card.dark { background: #0f1524; }
-.badge { padding: .15rem .5rem; border-radius: 9999px; font-size: .75rem; font-weight: 600; }
-.badge.buy { background: #dcfce7; color:#166534; }
-.badge.sell{ background:#fee2e2; color:#991b1b; }
+
+/* Layout helpers */
+.container-app { @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8; }
+
+/* Cards */
+.card { background: var(--card); border-radius: 1rem; box-shadow: 0 6px 18px rgba(2,8,23,.06), 0 2px 6px rgba(2,8,23,.04); border: 1px solid rgba(2,8,23,.06); }
+.dark .card { background: #101727; border-color: rgba(255,255,255,.06); }
+
+/* KPI card */
+.kpi-title { @apply text-sm text-gray-600 dark:text-gray-400; }
+.kpi-value { @apply text-3xl md:text-4xl font-semibold tracking-tight; }
+.kpi-sub { @apply text-xs text-gray-500 dark:text-gray-400 mt-1; }
+.text-profit { color:#16a34a; }
+.text-loss { color:#ef4444; }
+
+/* Toolbar */
+.toolbar { @apply flex flex-wrap items-center gap-3 text-sm; }
+.toolbar .btn { @apply px-3 py-2 border rounded-md hover:bg-gray-50 dark:hover:bg-[#121828]; }
+
+/* Table */
 .table-row:hover{ background:#f8fafc }
 .dark .table-row:hover{ background:#121828 }
+
+/* Badges */
+.badge { padding:.2rem .55rem; border-radius:9999px; font-size:.72rem; font-weight:600; }
+.badge.buy { background:#dcfce7; color:#166534; }
+.badge.sell{ background:#fee2e2; color:#991b1b; }
