@@ -128,31 +128,41 @@ export default function App(){
   useEffect(()=>{ const root=document.documentElement; if(dark) root.classList.add('dark'); else root.classList.remove('dark') },[dark])
 
   return (
-    <div className={`min-h-screen px-4 sm:px-6 lg:px-8 py-6 ${dark?'dark bg-[#0b0f1a] text-gray-100':'bg-white text-gray-900'}`}>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">📈</span>
-          <h1 className="text-2xl sm:text-3xl font-semibold">Trading Dashboard</h1>
+    <div className={`min-h-screen px-4 sm:px-6 lg:px-8 py-6 ${dark?'dark bg-[#0b0f1a] text-gray-100':'bg-gradient-to-br from-blue-50 via-white to-purple-50 text-gray-900'}`}>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className="text-4xl float-animation">🚀</div>
+          <h1 className="text-3xl sm:text-4xl font-bold dashboard-header">Trading Dashboard</h1>
         </div>
-        <div className="flex items-center gap-2 text-sm">
-          <span className="opacity-75">Last Update: {lastUpdate? lastUpdate.toLocaleString() : '—'}</span>
-          <label className="flex items-center gap-1 ml-3"><input type="checkbox" checked={auto} onChange={e=>setAuto(e.target.checked)} /> Auto-Refresh</label>
-          <button onClick={fetchData} className="px-3 py-2 border rounded-md hover:bg-gray-50">Refresh</button>
-          <button onClick={()=>setDark(d=>!d)} className="px-3 py-2 border rounded-md">{dark?'Light':'Dark'}</button>
+        <div className="flex items-center gap-3 text-sm">
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+            <span className="opacity-75">Last Update: {lastUpdate? lastUpdate.toLocaleString() : '—'}</span>
+          </div>
+          <label className="flex items-center gap-2 ml-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+            <input type="checkbox" checked={auto} onChange={e=>setAuto(e.target.checked)} className="w-4 h-4" /> 
+            <span>Auto-Refresh</span>
+          </label>
+          <button onClick={fetchData} className="btn-modern">🔄 Refresh</button>
+          <button onClick={()=>setDark(d=>!d)} className="btn-modern">{dark?'☀️ Light':'🌙 Dark'}</button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-        <Kpi title="Total Trades" value={total.toLocaleString()} subtitle="Total number of trades executed" />
-        <Kpi title="Win Rate" value={`${winRate}%`} subtitle="Percentage of profitable trades" danger={winRate==='0.00'} />
-        <Kpi title="Profit Factor" value={String(profitFactor)} subtitle="Gross profit / gross loss" />
-        <Kpi title="Average ROI" value={`${avgROI}%`} subtitle="Average return on investment per trade" />
-        <Kpi title="Net P&L" value={`₹${netPL.toLocaleString()}`} subtitle="Total profit or loss" highlight />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <Kpi title="Total Trades" value={total.toLocaleString()} subtitle="Total number of trades executed" icon="📊" />
+        <Kpi title="Win Rate" value={`${winRate}%`} subtitle="Percentage of profitable trades" danger={winRate==='0.00'} icon="🎯" />
+        <Kpi title="Profit Factor" value={String(profitFactor)} subtitle="Gross profit / gross loss" icon="📈" />
+        <Kpi title="Average ROI" value={`${avgROI}%`} subtitle="Average return on investment per trade" icon="💰" />
+        <Kpi title="Net P&L" value={`₹${netPL.toLocaleString()}`} subtitle="Total profit or loss" highlight icon="🏆" />
       </div>
 
-      <div className="card p-4 mb-6 dark:card">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-          <input placeholder="Search trades..." value={q} onChange={e=>setQ(e.target.value)} className="border rounded-md px-3 py-2" />
+      <div className="card p-6 mb-8 dark:card glow">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <input 
+            placeholder="🔍 Search trades..." 
+            value={q} 
+            onChange={e=>setQ(e.target.value)} 
+            className="search-input rounded-xl px-4 py-3 w-full" 
+          />
           <Select value={indexF} setValue={setIndexF} options={indexes} />
           <Select value={tfF} setValue={setTfF} options={tfs} />
           <Select value={sigF} setValue={setSigF} options={['All Signals','BUY','SELL']} />
@@ -160,55 +170,192 @@ export default function App(){
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <ChartCard title="Daily P&L (₹)">
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={daily}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="date" /><YAxis tickFormatter={(v)=>`₹${v}`} /><Tooltip formatter={(v)=>`₹${Number(v).toLocaleString()}`} /><Bar dataKey="pnl" /></BarChart>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <ChartCard title="📊 Daily P&L (₹)" icon="📈">
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={daily}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="date" stroke="#64748b" />
+              <YAxis tickFormatter={(v)=>`₹${v}`} stroke="#64748b" />
+              <Tooltip 
+                formatter={(v)=>`₹${Number(v).toLocaleString()}`}
+                contentStyle={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+                }}
+              />
+              <Bar dataKey="pnl" fill="url(#barGradient)" radius={[4, 4, 0, 0]} />
+              <defs>
+                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#667eea" />
+                  <stop offset="100%" stopColor="#764ba2" />
+                </linearGradient>
+              </defs>
+            </BarChart>
           </ResponsiveContainer>
         </ChartCard>
-        <ChartCard title="Equity Curve (₹)">
-          <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={equity}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="date" /><YAxis tickFormatter={(v)=>`₹${v}`} /><Tooltip formatter={(v)=>`₹${Number(v).toLocaleString()}`} /><Line type="monotone" dataKey="equity" dot={false} /></LineChart>
+        <ChartCard title="📈 Equity Curve (₹)" icon="📊">
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={equity}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="date" stroke="#64748b" />
+              <YAxis tickFormatter={(v)=>`₹${v}`} stroke="#64748b" />
+              <Tooltip 
+                formatter={(v)=>`₹${Number(v).toLocaleString()}`}
+                contentStyle={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+                }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="equity" 
+                dot={false} 
+                stroke="url(#lineGradient)"
+                strokeWidth={3}
+              />
+              <defs>
+                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#667eea" />
+                  <stop offset="100%" stopColor="#764ba2" />
+                </linearGradient>
+              </defs>
+            </LineChart>
           </ResponsiveContainer>
         </ChartCard>
-        <ChartCard title="Monthly P&L (₹)">
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={monthly}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="month" /><YAxis tickFormatter={(v)=>`₹${v}`} /><Tooltip formatter={(v)=>`₹${Number(v).toLocaleString()}`} /><Bar dataKey="pnl" /></BarChart>
+        <ChartCard title="📅 Monthly P&L (₹)" icon="📊">
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={monthly}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="month" stroke="#64748b" />
+              <YAxis tickFormatter={(v)=>`₹${v}`} stroke="#64748b" />
+              <Tooltip 
+                formatter={(v)=>`₹${Number(v).toLocaleString()}`}
+                contentStyle={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+                }}
+              />
+              <Bar dataKey="pnl" fill="url(#monthlyGradient)" radius={[4, 4, 0, 0]} />
+              <defs>
+                <linearGradient id="monthlyGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#10b981" />
+                  <stop offset="100%" stopColor="#059669" />
+                </linearGradient>
+              </defs>
+            </BarChart>
           </ResponsiveContainer>
         </ChartCard>
-        <ChartCard title="Target Hit Accuracy (%)">
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={tAcc}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="target" /><YAxis tickFormatter={(v)=>`${v}%`} /><Tooltip formatter={(v)=>`${Number(v).toFixed(2)}%`} /><Bar dataKey="hitPct" /></BarChart>
+        <ChartCard title="🎯 Target Hit Accuracy (%)" icon="🎯">
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={tAcc}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="target" stroke="#64748b" />
+              <YAxis tickFormatter={(v)=>`${v}%`} stroke="#64748b" />
+              <Tooltip 
+                formatter={(v)=>`${Number(v).toFixed(2)}%`}
+                contentStyle={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+                }}
+              />
+              <Bar dataKey="hitPct" fill="url(#accuracyGradient)" radius={[4, 4, 0, 0]} />
+              <defs>
+                <linearGradient id="accuracyGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#f59e0b" />
+                  <stop offset="100%" stopColor="#d97706" />
+                </linearGradient>
+              </defs>
+            </BarChart>
           </ResponsiveContainer>
         </ChartCard>
-        <ChartCard title="Signal Split">
-          <ResponsiveContainer width="100%" height={260}>
-            <PieChart><Pie dataKey="value" data={[{name:'BUY',value:sigCounts.BUY||0},{name:'SELL',value:sigCounts.SELL||0}]} nameKey="name" outerRadius={100} label /><Tooltip /><Legend /></PieChart>
+        <ChartCard title="📊 Signal Split" icon="📈">
+          <ResponsiveContainer width="100%" height={280}>
+            <PieChart>
+              <Pie 
+                dataKey="value" 
+                data={[{name:'BUY',value:sigCounts.BUY||0},{name:'SELL',value:sigCounts.SELL||0}]} 
+                nameKey="name" 
+                outerRadius={100} 
+                label 
+                fill="url(#pieGradient)"
+              />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+                }}
+              />
+              <Legend />
+            </PieChart>
           </ResponsiveContainer>
         </ChartCard>
-        <ChartCard title="Index Split">
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={idxData}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" /><YAxis /><Tooltip /><Bar dataKey="value" /></BarChart>
+        <ChartCard title="📊 Index Split" icon="📈">
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={idxData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="name" stroke="#64748b" />
+              <YAxis stroke="#64748b" />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+                }}
+              />
+              <Bar dataKey="value" fill="url(#indexGradient)" radius={[4, 4, 0, 0]} />
+              <defs>
+                <linearGradient id="indexGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#8b5cf6" />
+                  <stop offset="100%" stopColor="#7c3aed" />
+                </linearGradient>
+              </defs>
+            </BarChart>
           </ResponsiveContainer>
         </ChartCard>
       </div>
 
-      <div className="card p-4 dark:card">
-        <div className="text-xl font-semibold mb-2">Trade History</div>
+      <div className="card p-6 dark:card glow">
+        <div className="text-2xl font-bold mb-4 flex items-center gap-3">
+          <span>📋</span>
+          Trade History
+        </div>
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
-            <thead><tr className="text-left border-b border-gray-200"><th className="py-2 pr-4">Date</th><th className="py-2 pr-4">Signal</th><th className="py-2 pr-4">Index</th><th className="py-2 pr-4">TF</th><th className="py-2 pr-4">Status</th><th className="py-2 pr-4">Profit (₹)</th><th className="py-2 pr-4">ROI %</th><th className="py-2 pr-4">Duration</th></tr></thead>
+            <thead>
+              <tr className="text-left border-b border-gray-200 dark:border-gray-700">
+                <th className="py-3 pr-4 font-semibold">📅 Date</th>
+                <th className="py-3 pr-4 font-semibold">📊 Signal</th>
+                <th className="py-3 pr-4 font-semibold">📈 Index</th>
+                <th className="py-3 pr-4 font-semibold">⏰ TF</th>
+                <th className="py-3 pr-4 font-semibold">📋 Status</th>
+                <th className="py-3 pr-4 font-semibold">💰 Profit (₹)</th>
+                <th className="py-3 pr-4 font-semibold">📊 ROI %</th>
+                <th className="py-3 pr-4 font-semibold">⏱️ Duration</th>
+              </tr>
+            </thead>
             <tbody>
               {filtered.map((d,i)=>(
-                <tr key={i} className="table-row border-b border-gray-100">
-                  <td className="py-2 pr-4">{d.date? new Date(d.date).toLocaleString():''}</td>
-                  <td className="py-2 pr-4"><span className={`badge ${d.signal==='BUY'?'buy':'sell'}`}>{d.signal}</span></td>
-                  <td className="py-2 pr-4">{d.index}</td>
-                  <td className="py-2 pr-4">{d.timeframe}</td>
-                  <td className="py-2 pr-4">{d.status}</td>
-                  <td className={`py-2 pr-4 ${d.profit>=0?'text-green-600':'text-red-500'}`}>₹{d.profit.toLocaleString()}</td>
-                  <td className="py-2 pr-4">{d.roi?.toFixed? d.roi.toFixed(2): d.roi}</td>
-                  <td className="py-2 pr-4">{d.dur||''}</td>
+                <tr key={i} className="table-row border-b border-gray-100 dark:border-gray-800">
+                  <td className="py-3 pr-4">{d.date? new Date(d.date).toLocaleString():''}</td>
+                  <td className="py-3 pr-4"><span className={`badge ${d.signal==='BUY'?'buy':'sell'}`}>{d.signal}</span></td>
+                  <td className="py-3 pr-4">{d.index}</td>
+                  <td className="py-3 pr-4">{d.timeframe}</td>
+                  <td className="py-3 pr-4">{d.status}</td>
+                  <td className={`py-3 pr-4 font-semibold ${d.profit>=0?'text-green-600':'text-red-500'}`}>₹{d.profit.toLocaleString()}</td>
+                  <td className="py-3 pr-4">{d.roi?.toFixed? d.roi.toFixed(2): d.roi}</td>
+                  <td className="py-3 pr-4">{d.dur||''}</td>
                 </tr>
               ))}
             </tbody>
@@ -216,33 +363,49 @@ export default function App(){
         </div>
       </div>
 
-      <div className="text-xs opacity-60 mt-6 text-center">Google Sheets → React (client-only). Update sheet, hit Refresh.</div>
+      <div className="text-center mt-8 p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg">
+        <div className="text-sm opacity-75">🚀 Google Sheets → React (client-only). Update sheet, hit Refresh.</div>
+      </div>
     </div>
   )
 }
 
-function Kpi({title, value, subtitle, highlight, danger}){
+function Kpi({title, value, subtitle, highlight, danger, icon}){
+  let cardClass = "kpi-card"
+  if (highlight) cardClass += " highlight"
+  else if (danger) cardClass += " danger"
+  else if (title === "Win Rate" && value !== "0.00%") cardClass += " success"
+  else if (title === "Profit Factor") cardClass += " warning"
+  
   return (
-    <div className="card p-4 dark:card">
-      <div className="text-sm opacity-70">{title}</div>
-      <div className={`text-3xl font-semibold mt-1 ${highlight?'text-emerald-600':''} ${danger?'text-red-500':''}`}>{value}</div>
-      {subtitle && <div className="text-xs opacity-60 mt-1">{subtitle}</div>}
+    <div className={`${cardClass} p-6 rounded-2xl shadow-xl relative overflow-hidden`}>
+      <div className="absolute top-4 right-4 text-4xl opacity-20">{icon}</div>
+      <div className="text-sm opacity-90 font-medium">{title}</div>
+      <div className="text-4xl font-bold mt-2 mb-1">{value}</div>
+      {subtitle && <div className="text-xs opacity-75">{subtitle}</div>}
     </div>
   )
 }
 
-function ChartCard({title, children}){
+function ChartCard({title, children, icon}){
   return (
-    <div className="card p-4 dark:card">
-      <div className="text-sm font-medium mb-2">{title}</div>
-      <div className="h-64">{children}</div>
+    <div className="chart-card p-6 rounded-2xl shadow-xl dark:chart-card">
+      <div className="text-lg font-bold mb-4 flex items-center gap-3">
+        <span>{icon}</span>
+        {title}
+      </div>
+      <div className="h-72">{children}</div>
     </div>
   )
 }
 
 function Select({ value, setValue, options }){
   return (
-    <select value={value} onChange={e=>setValue(e.target.value)} className="border rounded-md px-3 py-2">
+    <select 
+      value={value} 
+      onChange={e=>setValue(e.target.value)} 
+      className="select-modern rounded-xl px-4 py-3 w-full cursor-pointer"
+    >
       {options.map(o=> <option key={o} value={o}>{o}</option>)}
     </select>
   )
