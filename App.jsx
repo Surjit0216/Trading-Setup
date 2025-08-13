@@ -176,4 +176,50 @@ export default function App(){
                   <tr key={i} className="table-row border-b border-slate-100 dark:border-slate-800">
                     <Td>{d.date? new Date(d.date).toLocaleString():''}</Td>
                     <Td><span className={`badge ${d.signal==='BUY'?'buy':'sell'}`}>{d.signal}</span></Td>
-                    <Td>{d.index}</Td><Td>{d.time
+                    <Td>{d.index}</Td><Td>{d.timeframe}</Td><Td>{d.status}</Td>
+                    <Td className={d.profit>=0?'text-profit':'text-loss'}>₹{d.profit.toLocaleString()}</Td>
+                    <Td>{d.roi?.toFixed? d.roi.toFixed(2): d.roi}</Td>
+                    <Td>{d.dur||''}</Td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="text-xs opacity-60 mt-6 text-center">Google Sheets → React (client-only). Update sheet, hit Refresh.</div>
+      </div>
+    </div>
+  )
+}
+
+/* ---------- tiny components ---------- */
+function Kpi({ icon, title, value, sub, color='' }) {
+  return (
+    <div className="card p-5 kpi-ring fade-in">
+      <div className="flex items-center justify-between">
+        <div className="kpi-title">{title}</div>
+        <div className="h-8 w-8 grid place-items-center rounded-lg bg-gradient-to-br from-blue-500 to-emerald-500 text-white text-sm">{icon}</div>
+      </div>
+      <div className={`kpi-value mt-1 ${color}`}>{value}</div>
+      {sub && <div className="kpi-sub">{sub}</div>}
+    </div>
+  )
+}
+function ChartCard({ title, children }) {
+  return (
+    <div className="card p-4 fade-in">
+      <div className="text-sm font-medium mb-2">{title}</div>
+      <div className="h-64">{children}</div>
+    </div>
+  )
+}
+function Th({ children }) { return <th className="py-2 pr-4 font-medium opacity-80">{children}</th> }
+function Td({ children }) { return <td className="py-2 pr-4">{children}</td> }
+function Select({ value, setValue, options }) {
+  return (
+    <select value={value} onChange={(e)=>setValue(e.target.value)} className="select">
+      {options.map((o)=> <option key={o} value={o}>{o}</option>)}
+    </select>
+  )
+}
